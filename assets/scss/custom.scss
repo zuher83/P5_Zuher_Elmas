@@ -1,0 +1,31 @@
+.section-title {
+    text-align: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+
+    h2 {
+        color: #2c2d3f;
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 0;
+        margin-bottom: 10px;
+        padding-bottom: 15px;
+        position: relative;
+        text-transform: capitalize;
+    }
+
+    h2::before {
+        position: absolute;
+        content: "";
+        height: 2px;
+        width: 50px;
+        background: #F7941D;
+        left: 50%;
+        bottom: 0;
+        margin-left: -25px;
+    }
+}
+
+.prix {
+    font-size: 1.5rem;
+}
