@@ -41,6 +41,7 @@ class apiDatas {
 
         localStorage.setItem('cart', JSON.stringify(oldItemsTab));
         this.countCart();
+        this.cartList();
     }
 
     getCart() {
@@ -71,13 +72,15 @@ class apiDatas {
 
     cartList() {
         let cartContent = this.groupCart();
-        console.log(cartContent);
+        let result = {}
         if (cartContent !== null) {
-            for (let p = 0; p < cartContent.length; p++) {
-                console.log(cartContent[p]);
-
-            }
+            Object.keys(cartContent).forEach(function(key) {
+                // console.log('Key : ' + key + ', Value : ' + cartContent[key]);
+                result[key] = cartContent[key]
+              })
         }
+        // console.log(result);
+        return result;
     }
 
     buildMiniCartListHtml(product, qty = 1) {
