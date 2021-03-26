@@ -557,7 +557,6 @@ Version:1.0
 .header .shopping-list .quantity{
 	line-height: 22px;
     font-size: 13px;
-	padding-bottom: 30px;
 }
 .header .shopping-list h4 {
 	font-size: 14px;
@@ -2995,17 +2994,20 @@ Version:1.0
 	width: 175px;
 	display: inline-block;
 }
-.shopping-cart .qty .button {
+.shopping-cart .qty .button ,
+.plus-minus .button{
 	display: inline-block;
 	position: absolute;
 	top: 0;
 }
-.shopping-cart .qty .button.minus{
+.shopping-cart .qty .button.minus,
+.plus-minus .button.minus{
 	left:0;
 	border-radius:0;
 	overflow:hidden;
 }
-.shopping-cart .qty .button.plus {
+.shopping-cart .qty .button.plus,
+.plus-minus .button.plus {
 	right: 0;
 	border-radius:0;
 	overflow:hidden;
@@ -3024,7 +3026,8 @@ Version:1.0
 .shopping-cart .qty .button .btn:hover{
 	color:#F7941D;
 }
-.shopping-cart .qty .input-number {
+.shopping-cart .qty .input-number,
+.plus-minus .input-number {
 	border: 1px solid #eceded;
 	width: 100%;
 	text-align: center;
@@ -3072,64 +3075,64 @@ Version:1.0
 	background:#fff;
 	color:#F7941D;
 }
-.shopping-cart .total-amount .left label{
-	font-size:22px;
-	font-weight:500;
-	color:#333;
-}
-.shopping-cart .total-amount .left .checkbox {
-	text-align: left;
-	margin: 0;
-	margin-top: 20px;
-}
-.shopping-cart .total-amount .left .checkbox label {
-	font-size: 15px;
-	font-weight: 400;
-	color: #333;
-	position: relative;
-	padding-left: 30px;
-}
-.shopping-cart .total-amount .left .checkbox label:hover{
-	cursor:pointer;
-}
-.shopping-cart .total-amount .left .checkbox label input{
-	display:none;
-}
-.shopping-cart .total-amount .left .checkbox label::before {
-	position: absolute;
-	content: "";
-	left: 0;
-	top: 4px;
-	width: 16px;
-	height: 16px;
-	border: 1px solid #555555;
-	border-radius: 0px;
-}
-.shopping-cart .total-amount .left .checkbox label::after {
-	position: absolute;
-	content: "\f00c";
-	font-family: "Fontawesome";
-	left: 0;
-	top: 0;
-	width: 22px;
-	height: 22px;
-	line-height: 24px;
-	left: 3px;
-	top: 0px;
-	opacity: 0;
-	visibility: hidden;
-	transform: scale(0);
-	-webkit-transition: all 0.4s ease;
-	-moz-transition: all 0.4s ease;
-	transition: all 0.4s ease;
-	display: block;
-	font-size: 11px;
-}
-.shopping-cart .total-amount .left .checkbox label.checked::after{
-	opacity:1;
-	visibility:visible;
-	transform:scale(1);
-}
+// .shopping-cart .total-amount .left label{
+// 	font-size:22px;
+// 	font-weight:500;
+// 	color:#333;
+// }
+// .shopping-cart .total-amount .left .checkbox {
+// 	text-align: left;
+// 	margin: 0;
+// 	margin-top: 20px;
+// }
+// .shopping-cart .total-amount .left .checkbox label {
+// 	font-size: 15px;
+// 	font-weight: 400;
+// 	color: #333;
+// 	position: relative;
+// 	padding-left: 30px;
+// }
+// .shopping-cart .total-amount .left .checkbox label:hover{
+// 	cursor:pointer;
+// }
+// .shopping-cart .total-amount .left .checkbox label input{
+// 	display:none;
+// }
+// .shopping-cart .total-amount .left .checkbox label::before {
+// 	position: absolute;
+// 	content: "";
+// 	left: 0;
+// 	top: 4px;
+// 	width: 16px;
+// 	height: 16px;
+// 	border: 1px solid #555555;
+// 	border-radius: 0px;
+// }
+// .shopping-cart .total-amount .left .checkbox label::after {
+// 	position: absolute;
+// 	content: "\f00c";
+// 	font-family: "Fontawesome";
+// 	left: 0;
+// 	top: 0;
+// 	width: 22px;
+// 	height: 22px;
+// 	line-height: 24px;
+// 	left: 3px;
+// 	top: 0px;
+// 	opacity: 0;
+// 	visibility: hidden;
+// 	transform: scale(0);
+// 	-webkit-transition: all 0.4s ease;
+// 	-moz-transition: all 0.4s ease;
+// 	transition: all 0.4s ease;
+// 	display: block;
+// 	font-size: 11px;
+// }
+// .shopping-cart .total-amount .left .checkbox label.checked::after{
+// 	opacity:1;
+// 	visibility:visible;
+// 	transform:scale(1);
+// }
 .shopping-cart .total-amount .right {
 	padding-left: 100px;
 }

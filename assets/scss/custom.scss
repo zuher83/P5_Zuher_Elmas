@@ -1,31 +1,42 @@
 .section-title {
-    text-align: center;
-    padding-top: 40px;
-    padding-bottom: 40px;
+  padding-bottom: 40px;
+  padding-top: 40px;
+  text-align: center;
 
-    h2 {
-        color: #2c2d3f;
-        font-size: 30px;
-        font-weight: 700;
-        margin-bottom: 0;
-        margin-bottom: 10px;
-        padding-bottom: 15px;
-        position: relative;
-        text-transform: capitalize;
-    }
+  h2 {
+    color: #2c2d3f;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    padding-bottom: 15px;
+    position: relative;
+    text-transform: capitalize;
+  }
 
-    h2::before {
-        position: absolute;
-        content: "";
-        height: 2px;
-        width: 50px;
-        background: #F7941D;
-        left: 50%;
-        bottom: 0;
-        margin-left: -25px;
-    }
+  h2::before {
+    background: #f7941d;
+    bottom: 0px;
+    content: '';
+    height: 2px;
+    left: 50%;
+    margin-left: -25px;
+    position: absolute;
+    width: 50px;
+  }
 }
 
 .prix {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.header .shopping-list {
+  padding-left: 0;
+}
+
+footer {
+  padding-top: 25px;
+
+  img {
+    filter: invert(1);
+  }
 }

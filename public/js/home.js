@@ -11,7 +11,6 @@ class home {
   }
 
   async getAllProductItems(homePage) {
-
     let content = "";
     try {
       const products = await orinocoApi.apiDatas.allProductItems();
@@ -19,12 +18,12 @@ class home {
       for (let p = 0; p < products.length; p++) {
         content += this.buildHtmlProduct(products[p]);
       }
-
     } catch (err) {
       console.error(err);
     }
 
     homePage.innerHTML = content;
+    this.addInMyCartClick();
   }
 
   buildHtmlProduct(product) {
@@ -41,10 +40,10 @@ class home {
                 <div class="card-text">${product.description} </div>
                 <div class="row pt-3">
                     <div class="col">
-                        <div class="prix label label-danger">${product.price / 100} €</div>
+                        <div class="prix text-danger">${product.price / 100} €</div>
                     </div>
                     <div class="col">
-                        <a href="#" class="btn btn-sm btn-success"><i class="fas fa-cart-plus"></i> Add</a>
+                        <a href="#" class="btn btn-success add-in-cart" data-id="${product._id}"><i class="fas fa-cart-plus"></i> Ajouter</a>
                     </div>
                 </div>
             </div>
@@ -53,4 +52,13 @@ class home {
     `;
   }
 
+  addInMyCartClick() {
+    document.querySelectorAll('a.add-in-cart').forEach(item => {
+      item.addEventListener('click', event => {
+        event.preventDefault();
+        let product = event.target.getAttribute('data-id');
+        orinocoApi.apiDatas.addInCart(product, 1);
+      })
+    })
+  }
 }

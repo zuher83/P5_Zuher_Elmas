@@ -1,97 +1,233 @@
-var httpRequest = new XMLHttpRequest();
-
 class apiDatas {
+  productItems = null;
+  product = null;
 
-    productItems = null;
-    product = null;
+  constructor(self) {
+    this.self = self;
+    this.countCart();
+    this.groupCart();
+    this.cartList(self);
+  }
 
-    constructor(self) {
-        this.self = self;
-        this.countCart();
-        this.cartList();
-        this.groupCart();
+  /**
+   * Permet d'appeler tous les produits depuis le backend
+   *
+   * @return  {Array}   Retourne la liste des ID produits
+   * @memberof apiDatas
+   */
+  async allProductItems() {
+    if (this.productItems !== null) return this.productItems;
+    const data = await fetch(this.self);
+    this.productItems = await data.json();
+    this.countCart();
+    return this.productItems;
+  }
 
+  /**
+   * Appel d'un produit unique depuis le backend avec l'id du produit
+   *
+   * @param   {String}  productId   Id du produit
+   * @return  {Object}  Retourne l'objet du produit
+   * @memberof apiDatas
+   */
+  async productItem(productId) {
+    if (productId !== null) {
+      let apiUrl = 'http://localhost:3000/api/cameras/';
+      let apiUrlProduct = apiUrl.concat('', productId);
+      let result = null;
+      const productData = await fetch(apiUrlProduct);
+      this.product = await productData.json();
 
+      return this.product;
+    }
+  }
+
+  /**
+   * Boucle d'ajout de quantité de produit dans le panier
+   *
+   * @param   {String}  productId   Id du produit
+   * @param   {Number}  [qty=1]     Quantité du produit (par défaut 1)
+   * @memberof cart
+   */
+  addInCart(productId, qty = 1) {
+    for (let i = 1; i <= qty; i++) {
+      orinocoApi.apiDatas.setCart(productId);
+    }
+  }
+
+  /**
+   * Ajout d'un produit dans le panier et stockage dans le localstore
+   *
+   * @param   {String}  cart  Id du produit à ajouter au panier
+   * @memberof apiDatas
+   */
+  setCart(cart) {
+    let productItemStorage = [];
+    if (localStorage.getItem('cart') !== null) {
+      productItemStorage = JSON.parse(localStorage.getItem('cart')) || [];
+    }
+    productItemStorage.push(cart);
+
+    localStorage.setItem('cart', JSON.stringify(productItemStorage));
+    this.countCart();
+    this.cartList();
+  }
+
+  /**
+   * Affiche les produits du panier stocké dans le localstorage
+   *
+   * @return  {Array}   return un tableau avec les ID produits
+   * @memberof apiDatas
+   */
+  getCart() {
+    return localStorage.getItem('cart') === null ? [] : localStorage.getItem('cart');
+  }
+
+  /**
+   * Permet d'effacer un article du panier
+   *
+   * @param   {String}  productId Id du produit
+   * @memberof apiDatas
+   */
+  removeProductInCart(productId) {
+    const newCart = [];
+    let cart = JSON.parse(this.getCart());
+    for (let i = 0, size=cart.length; i <size; i++) {
+      if (cart[i] !== productId) newCart.push(cart[i]);
+    }
+    localStorage.removeItem("cart");
+
+    for (let x = 0, size=newCart.length; x <size; x++) {
+      this.setCart(newCart[x]);
+    }
+    window.location.reload();
+  }
+
+  /**
+   * Retourne le nombre d'articles dans le panier et les affiche sur l'icone de pannier
+   *
+   * @memberof apiDatas
+   */
+  countCart() {
+    let cartContent = this.getCart();
+
+    if (cartContent.length > 0) {
+      cartContent = JSON.parse(this.getCart());
+    } else {
+      cartContent = 0;
     }
 
-    async allProductItems() {
-        if (this.productItems !== null) return this.productItems;
-        const data = await fetch(this.self);
-        this.productItems = await data.json();
-        this.countCart();
-        return this.productItems;
+    if (cartContent !== 0) {
+      document.getElementsByClassName('total-count')[0].innerText =
+      cartContent.length;
     }
+  }
 
-    async productItem(productId) {
-        let apiUrl = "http://localhost:3000/api/cameras/";
-        let apiUrlProduct = apiUrl.concat('', productId)
-        let result = null
-        const productData = await fetch(apiUrlProduct);
-        this.product = await productData.json()
+  /**
+   * Regroupe les id identiques des articles dans le panier
+   *
+   * @return  {object}  retourne un objet
+   * key            | value
+   * id produit     | quantité total correspondant à l'ID du produit
+   * @memberof apiDatas
+   */
+  groupCart() {
+    let cardDict = {};
+    if (this.getCart().length !== 0) {
+      const cartContent = JSON.parse(this.getCart());
 
-        return this.product;
+      for (let i = 0; i < cartContent.length; i++) {
+        if (cardDict[cartContent[i]]) {
+          cardDict[cartContent[i]] += 1;
+        } else {
+          cardDict[cartContent[i]] = 1;
+        }
+      }
     }
+    return cardDict;
+  }
 
-    setCart(cart) {
-        let oldItemsTab = JSON.parse(localStorage.getItem("cart")) || [];
+  /**
+   * Affiche les produits du panier dans une mini liste lorsqu'on
+   * survole l'icone du panier
+   *
+   * @param   {HTMLElement}   self
+   * @memberof apiDatas
+   */
+  async cartList(self) {
+    if (this.getCart().length !== 0) {
+      let cartContent = this.groupCart();
+      let content = '';
+      let total = 0;
 
-        for (let val in cart) {
-            oldItemsTab.push(cart[val]);
+      if (cartContent) {
+        for (const [key, value] of Object.entries(cartContent)) {
+          const product = await this.productItem(key);
+          total += (product.price / 100) * value;
+          content += this.buildMiniCartListHtml(product, value);
         }
 
-        localStorage.setItem('cart', JSON.stringify(oldItemsTab));
-        this.countCart();
-        this.cartList();
+        document.getElementsByClassName('shopping-list')[0].innerHTML = content;
+        document.getElementsByClassName('total')[0].innerHTML =
+        Number.parseFloat(total).toFixed(2) + '€';
+      }
     }
+  }
 
-    getCart() {
-        return localStorage.getItem("cart") === null ? [] : localStorage.getItem("cart");
-    }
+  /**
+   * Construit le HTML de la liste du panier s'affichant sur l'icone
+   *
+   * @param   {Object}  product   Objet du produit avec valeurs
+   * @param   {number}  [qty=1]    La quantité total de chaque produit dans le panier
+   * @return  {string}
+   * @memberof apiDatas
+   */
+  buildMiniCartListHtml(product, qty = 1) {
+    return `
+    <li>
+    <a href="#" class="remove" title="Remove this item"><i class="far fa-trash-alt"></i></a>
+    <a class="cart-img" href="#"><img src="${product.imageUrl}" alt="${
+      product.description
+    }"></a>
+    <h4><a href="#">${product.name}</a></h4>
+    <p class="quantity">${qty}x - <span class="amount">${
+      product.price / 100
+    } €</span></p>
+    </li>
+    `;
+  }
 
-    countCart() {
-        const cartContent = JSON.parse(this.getCart());
-        if (cartContent !== null) {
-            document.getElementsByClassName('total-count')[0].innerText = cartContent.length;
-        }
-    }
-
-    groupCart() {
-        const cartContent = JSON.parse(this.getCart());
-        let cardDict = {};
-
-        for (let i = 0; i < cartContent.length; i++) {
-            // console.log(cartContent[i]);
-            if (cardDict[cartContent[i]]) {
-                cardDict[cartContent[i]] += 1
-            } else {
-                cardDict[cartContent[i]] = 1
-            }
-        }
-        return cardDict;
-    }
-
-    cartList() {
-        let cartContent = this.groupCart();
-        let result = {}
-        if (cartContent !== null) {
-            Object.keys(cartContent).forEach(function(key) {
-                // console.log('Key : ' + key + ', Value : ' + cartContent[key]);
-                result[key] = cartContent[key]
-              })
-        }
-        // console.log(result);
-        return result;
-    }
-
-    buildMiniCartListHtml(product, qty = 1) {
-        return `
-        <li>
-            <a href="#" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
-            <a class="cart-img" href="#"><img src="${product.imageUrl}" alt="${product.description}"></a>
-            <h4><a href="#">${product.name}</a></h4>
-            <p class="quantity">1x - <span class="amount">${product.price / 100} €</span></p>
-        </li>
-        `
-    }
-
+  /**
+   * Envoi la commande des produits dans le panier au backend
+   * contact: {
+   *   firstName: string,
+   *   lastName: string,
+   *   address: string,
+   *   city: string,
+   *   email: string
+   * }
+   * products: [string] <-- array of product _id
+   *
+   * @param   {Object}  orderItems
+   * @memberof apiDatas
+   */
+  orderCamerasInCart(orderItems) {
+    fetch('http://localhost:3000/api/cameras/order', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'cors',
+    body: orderItems,
+  })
+  .then((response) => {
+    return response.json();
+  })
+  .then((r) => {
+    window.location.assign('./confirmation.html?orderId=' + r.orderId);
+  })
+  .catch((e) => {
+    console.error('erreur : ' + e.name);
+  });
+}
 }
