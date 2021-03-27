@@ -1,4 +1,4 @@
-class Confirmation {
+class confirmation {
 
   constructor(self) {
     this.self = self;

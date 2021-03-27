@@ -60,6 +60,21 @@ class product {
   }
 
   /**
+   * Construit un champ select affichant les options du produit
+   *
+   * @param {String} lenses
+   * @return {HTMLElement}
+   * @memberof product
+   */
+  getLensesOptions(lenses) {
+    let result = '';
+    for (let i = 0, size = lenses.length; i < size; i++) {
+      result += ` <option>${lenses[i]}</option>`;
+    }
+    return result;
+  }
+
+  /**
    * Construit le HTML du produit sur la page product.html
    *
    * @param   {Object}  product   Object du produit
@@ -79,16 +94,15 @@ class product {
       </div>
     </div>
 
-
       <div class="col-12 col-lg-6">
         <div class="card" data-id="${product._id}">
             <div class="card-body">
                 <h2 class="card-title">${product.name} </h2>
                 <div class="card-text">${product.description} </div>
+                <select class="form-control mb-4">${this.getLensesOptions(product.lenses)} </select>
                 <div class="row">
                   <div class="col col-lg-6">
                     <div class="form-group">
-                    <label>Quantity :</label>
                     <div class="input-group plus-minus">
                         <div class="button minus">
                             <button type="button" class="quantity-left-minus btn btn-primary btn-number" id="minus" data-field="">
