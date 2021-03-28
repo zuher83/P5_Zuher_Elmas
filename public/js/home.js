@@ -18,9 +18,7 @@ class Home {
     try {
       const products = await orinocoApi.apiDatas.allProductItems();
       for (let p = 0; p < products.length; p += 1) {
-        const unitPrice = orinocoApi.apiDatas.formatLocaleMoney(
-          products[p].price / 100
-        );
+        const unitPrice = orinocoApi.apiDatas.formatLocaleMoney(products[p].price / 100);
         content += Home.buildHtmlProduct(products[p], unitPrice);
       }
     } catch (err) {

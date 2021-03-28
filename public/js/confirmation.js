@@ -23,9 +23,7 @@ class Confirmation {
   confirmationHtml() {
     const contact = JSON.parse(localStorage.getItem('contact'));
     const orderId = new URLSearchParams(document.location.search.substring(1)).get('orderId');
-    const totalOrder = orinocoApi.apiDatas.formatLocaleMoney(
-      JSON.parse(localStorage.getItem('total'))
-    );
+    const totalOrder = orinocoApi.apiDatas.formatLocaleMoney(JSON.parse(localStorage.getItem('total')));
 
     this.self.innerHTML = `
     <section class="confirmationWrapper">

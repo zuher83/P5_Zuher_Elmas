@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 class CartPage {
   constructor(self) {
     this.self = self;
@@ -24,18 +23,9 @@ class CartPage {
       for (const [key, value] of Object.entries(cartContent)) {
         const product = await orinocoApi.apiDatas.productItem(key);
         total += (product.price / 100) * value;
-        const totalLine = orinocoApi.apiDatas.formatLocaleMoney(
-          (product.price / 100) * value
-        );
-        const unitPrice = orinocoApi.apiDatas.formatLocaleMoney(
-          product.price / 100
-        );
-        content += CartPage.buildHtmlCartTable(
-          product,
-          unitPrice,
-          value,
-          totalLine
-        );
+        const totalLine = orinocoApi.apiDatas.formatLocaleMoney((product.price / 100) * value);
+        const unitPrice = orinocoApi.apiDatas.formatLocaleMoney(product.price / 100);
+        content += CartPage.buildHtmlCartTable( product, unitPrice, value, totalLine );
       }
     } catch (err) {
       console.error(err);
@@ -53,13 +43,8 @@ class CartPage {
    * @memberof cartPage
    */
   updateTotalCart(total) {
-    document.querySelector(
-      '.order-subtotal'
-    ).innerHTML = orinocoApi.apiDatas.formatLocaleMoney(total);
-    document.querySelector(
-      '.order-paid'
-    ).innerHTML = orinocoApi.apiDatas.formatLocaleMoney(total);
-    console.log(this);
+    document.querySelector('.order-subtotal').innerHTML = orinocoApi.apiDatas.formatLocaleMoney(total);
+    document.querySelector('.order-paid').innerHTML = orinocoApi.apiDatas.formatLocaleMoney(total);
     localStorage.setItem('total', total);
   }
 
@@ -79,19 +64,19 @@ class CartPage {
    */
   static buildHtmlCartTable(product, unitPrice, qty = 1, total) {
     return `
-    <tr id="${product._id}">
-    <td class="image" data-title="No"><img src="${product.imageUrl}" alt="#"></td>
-    <td class="product-des" data-title="Description">
-    <p class="product-name"><a href="produit.html?id=${product._id}">${product.name}</a></p>
-    <p class="product-des">${product.description}</p>
-    </td>
-    <td class="price" data-title="Price"><span>${unitPrice}</span></td>
-    <td class="qty" data-title="Qty"><!-- Input Order -->
-    <span>${qty}</span>
-    </td>
-    <td class="total-amount" data-title="Total"><span>${total}</span></td>
-    <td class="action" data-title="Remove""><a href="#" class="remove" data-id="${product._id}"><i class="far fa-trash-alt"></i></a></td>
-    </tr>
+      <tr id="${product._id}">
+        <td class="image" data-title="No"><img src="${product.imageUrl}" alt="#"></td>
+        <td class="product-des" data-title="Description">
+          <p class="product-name"><a href="produit.html?id=${product._id}">${product.name}</a></p>
+          <p class="product-des">${product.description}</p>
+        </td>
+        <td class="price" data-title="Price"><span>${unitPrice}</span></td>
+        <td class="qty" data-title="Qty"><!-- Input Order -->
+          <span>${qty}</span>
+        </td>
+        <td class="total-amount" data-title="Total"><span>${total}</span></td>
+        <td class="action" data-title="Remove""><a href="#" class="remove" data-id="${product._id}"><i class="far fa-trash-alt"></i></a></td>
+      </tr>
     `;
   }
 
@@ -118,9 +103,7 @@ class CartPage {
     const ville = document.getElementById('validationVille');
     const codePostal = document.getElementById('validationCodePostal');
     const email = document.getElementById('validatedInputEmail');
-    const confirmationEmail = document.getElementById(
-      'validatedInputEmailConfirmation'
-    );
+    const confirmationEmail = document.getElementById('validatedInputEmailConfirmation');
     const cgvAccept = document.getElementById('invalidCheck3');
     const postalRegex = /^\d{5}$|^\d{5}-\d{4}$/;
     const textRegex = /^[a-zA-Z0-9\s,'-]*$/;
@@ -223,9 +206,7 @@ class CartPage {
    * @memberof cartPage
    */
   validateOrder() {
-    document
-      .getElementById('customer-form')
-      .addEventListener('submit', (event) => {
+    document .getElementById('customer-form') .addEventListener('submit', (event) => {
         event.preventDefault();
         if (orinocoApi.apiDatas.getCart().length > 0) {
           CartPage.formSubmit();
@@ -250,63 +231,49 @@ class CartPage {
     const ville = document.getElementById('validationVille');
     const codePostal = document.getElementById('validationCodePostal');
     const email = document.getElementById('validatedInputEmail');
-    const confirmationEmail = document.getElementById(
-      'validatedInputEmailConfirmation'
-    );
+    const confirmationEmail = document.getElementById('validatedInputEmailConfirmation');
     const cgvAccept = document.getElementById('invalidCheck3');
     const postalRegex = /^\d{5}$|^\d{5}-\d{4}$/;
     const textRegex = /^[a-zA-Z0-9\s,'-]*$/;
     const emailRegex = /^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@{[a-zA-Z0-9_\-\.]+0\.([a-zA-Z]{2,5}){1,25})+)*$/;
 
-    if ((textRegex.test(firstName.value) !== true) | (firstName.value == '')) {
+    if (textRegex.test(firstName.value) !== true || firstName.value === '') {
       alert("Merci d'indiquer votre prénom");
     }
-    if ((textRegex.test(name.value) !== true) | (name.value == '')) {
+    if (textRegex.test(name.value) !== true || name.value === '') {
       alert("Merci d'indiquer votre nom");
     }
-    if ((textRegex.test(rue.value) !== true) | (rue.value == '')) {
+    if (textRegex.test(rue.value) !== true || rue.value === '') {
       alert("Merci d'indiquer votre rue");
     }
-    if ((textRegex.test(ville.value) !== true) | (ville.value == '')) {
+    if (textRegex.test(ville.value) !== true || ville.value === '') {
       alert("Merci d'indiquer votre ville");
     }
-    if (
-      (postalRegex.test(codePostal.value) !== true) |
-      (codePostal.value == '')
-    ) {
+    if (postalRegex.test(codePostal.value) !== true || codePostal.value === '' ) {
       alert("Merci d'indiquer votre code postal");
     }
-    if (
-      (emailRegex.test(email.value) !== true) |
-      ((email.value == '') & (email.value !== confirmationEmail.value))
-    ) {
+    if ( emailRegex.test(email.value) !== true || (email.value === '') && (email.value !== confirmationEmail.value) ) {
       alert("Merci d'indiquer votre email");
     }
     if (cgvAccept.checked !== true) {
       alert("Merci d'accepter nos CGV");
     }
-    if ((textRegex.test(firstName.value) !== true) | (firstName.value == '')) {
+    if (textRegex.test(firstName.value) !== true || firstName.value === '') {
       alert("Merci d'indiquer votre prénom");
     }
-    if ((textRegex.test(name.value) !== true) | (name.value == '')) {
+    if (textRegex.test(name.value) !== true || name.value === '') {
       alert("Merci d'indiquer votre nom");
     }
-    if ((textRegex.test(rue.value) !== true) | (rue.value == '')) {
+    if (textRegex.test(rue.value) !== true || rue.value === '') {
       alert("Merci d'indiquer votre rue");
     }
-    if ((textRegex.test(ville.value) !== true) | (ville.value == '')) {
+    if (textRegex.test(ville.value) !== true || ville.value === '') {
       alert("Merci d'indiquer votre ville");
     }
-    if (
-      (postalRegex.test(codePostal.value) !== true) |
-      (codePostal.value == '')
-    ) {
+    if (postalRegex.test(codePostal.value) !== true || codePostal.value === '') {
       alert("Merci d'indiquer votre code postal");
     }
-    if (
-      (emailRegex.test(email.value) !== true) |
-      ((email.value == '') & (email.value !== confirmationEmail.value))
-    ) {
+    if (emailRegex.test(email.value) !== true || (email.value === '') & (email.value !== confirmationEmail.value) ) {
       alert("Merci d'indiquer votre email");
     }
     if (cgvAccept.checked !== true) {
@@ -314,7 +281,7 @@ class CartPage {
     }
 
     // informations du contact
-    let contact = {
+    const contact = {
       firstName: firstName.value,
       lastName: name.value,
       address: rue.value,
@@ -323,10 +290,10 @@ class CartPage {
     };
 
     // ID des produits du panier
-    let products = JSON.parse(orinocoApi.apiDatas.getCart());
+    const products = JSON.parse(orinocoApi.apiDatas.getCart());
 
     // @type {Object} on groupe les deux variables
-    let orderCart = JSON.stringify({
+    const orderCart = JSON.stringify({
       contact,
       products
     });
