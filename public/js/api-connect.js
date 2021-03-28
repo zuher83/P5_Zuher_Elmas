@@ -2,6 +2,11 @@ class apiDatas {
   productItems = null;
   product = null;
 
+  /**
+   * Creates an instance of apiDatas.
+   * @param {*} self
+   * @memberof apiDatas
+   */
   constructor(self) {
     this.self = self;
     this.countCart();
@@ -80,7 +85,9 @@ class apiDatas {
    * @memberof apiDatas
    */
   getCart() {
-    return localStorage.getItem('cart') === null ? [] : localStorage.getItem('cart');
+    return localStorage.getItem('cart') === null
+      ? []
+      : localStorage.getItem('cart');
   }
 
   /**
@@ -92,12 +99,12 @@ class apiDatas {
   removeProductInCart(productId) {
     const newCart = [];
     let cart = JSON.parse(this.getCart());
-    for (let i = 0, size=cart.length; i <size; i++) {
+    for (let i = 0, size = cart.length; i < size; i++) {
       if (cart[i] !== productId) newCart.push(cart[i]);
     }
-    localStorage.removeItem("cart");
+    localStorage.removeItem('cart');
 
-    for (let x = 0, size=newCart.length; x <size; x++) {
+    for (let x = 0, size = newCart.length; x < size; x++) {
       this.setCart(newCart[x]);
     }
     window.location.reload();
@@ -119,14 +126,16 @@ class apiDatas {
 
     if (cartContent !== 0) {
       document.getElementsByClassName('total-count')[0].innerText =
-      cartContent.length;
+        cartContent.length;
+      document.getElementsByClassName('shop-cart-items')[0].innerText =
+        cartContent.length + ' Article(s)';
     }
   }
 
   /**
    * Regroupe les id identiques des articles dans le panier
    *
-   * @return  {object}  retourne un objet
+   * @return  {Object}  retourne un objet
    * key            | value
    * id produit     | quantité total correspondant à l'ID du produit
    * @memberof apiDatas
@@ -169,7 +178,7 @@ class apiDatas {
 
         document.getElementsByClassName('shopping-list')[0].innerHTML = content;
         document.getElementsByClassName('total')[0].innerHTML =
-        Number.parseFloat(total).toFixed(2) + '€';
+          Number.parseFloat(total).toFixed(2) + '€';
       }
     }
   }
@@ -178,27 +187,42 @@ class apiDatas {
    * Construit le HTML de la liste du panier s'affichant sur l'icone
    *
    * @param   {Object}  product   Objet du produit avec valeurs
-   * @param   {number}  [qty=1]    La quantité total de chaque produit dans le panier
-   * @return  {string}
+   * @param   {Number}  [qty=1]    La quantité total de chaque produit dans le panier
+   * @return  {String}
    * @memberof apiDatas
    */
   buildMiniCartListHtml(product, qty = 1) {
     return `
     <li>
-    <a href="#" class="remove" title="Remove this item"><i class="far fa-trash-alt"></i></a>
-    <a class="cart-img" href="#"><img src="${product.imageUrl}" alt="${
-      product.description
-    }"></a>
-    <h4><a href="#">${product.name}</a></h4>
-    <p class="quantity">${qty}x - <span class="amount">${
-      product.price / 100
-    } €</span></p>
+      <a href="#" class="remove" title="Remove this item"><i class="far fa-trash-alt"></i></a>
+      <a class="cart-img" href="#"><img src="${product.imageUrl}" alt="${
+        product.description
+      }"></a>
+      <h4><a href="#">${product.name}</a></h4>
+      <p class="quantity">${qty}x - <span class="amount">${
+        product.price / 100
+      } €</span></p>
     </li>
     `;
   }
 
   /**
+   * Retourne un nombre formaté en monnaie locale
+   *
+   * @param {Number} total  Le nombre à convertir
+   * @return {Number}   Le nombre formaté localement
+   * @memberof apiDatas
+   */
+  formatLocaleMoney(total) {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(total);
+  }
+
+  /**
    * Envoi la commande des produits dans le panier au backend
+   *
    * contact: {
    *   firstName: string,
    *   lastName: string,
@@ -213,21 +237,21 @@ class apiDatas {
    */
   orderCamerasInCart(orderItems) {
     fetch('http://localhost:3000/api/cameras/order', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-    body: orderItems,
-  })
-  .then((response) => {
-    return response.json();
-  })
-  .then((r) => {
-    window.location.assign('./confirmation.html?orderId=' + r.orderId);
-  })
-  .catch((e) => {
-    console.error('erreur : ' + e.name);
-  });
-}
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      mode: 'cors',
+      body: orderItems
+    })
+      .then((result) => {
+        return result.json();
+      })
+      .then((confirmation) => {
+        window.location.assign('./confirmation.html?orderId=' + confirmation.orderId);
+      })
+      .catch((err) => {
+        console.error('erreur : ' + err.name);
+      });
+  }
 }

@@ -1,9 +1,9 @@
-class cartPage {
-
+/* eslint-disable no-alert */
+class CartPage {
   constructor(self) {
     this.self = self;
-    this.cartListProducts(self);
-    this.checkForm();
+    this.cartListProducts();
+    CartPage.checkForm();
     this.validateOrder();
   }
 
@@ -13,11 +13,10 @@ class cartPage {
    *
    * Le total de la commande est mis à jour à chaque changement
    *
-   * @param   {HTMLElement} self
    * @memberof cartPage
    */
-  async cartListProducts(self) {
-    let content = "";
+  async cartListProducts() {
+    let content = '';
     let total = 0;
     try {
       const cartContent = await orinocoApi.apiDatas.groupCart();
@@ -25,16 +24,26 @@ class cartPage {
       for (const [key, value] of Object.entries(cartContent)) {
         const product = await orinocoApi.apiDatas.productItem(key);
         total += (product.price / 100) * value;
-        let totalLine = (product.price / 100) * value;
-        content += this.buildHtmlCartTable(product, value, totalLine);
+        const totalLine = orinocoApi.apiDatas.formatLocaleMoney(
+          (product.price / 100) * value
+        );
+        const unitPrice = orinocoApi.apiDatas.formatLocaleMoney(
+          product.price / 100
+        );
+        content += CartPage.buildHtmlCartTable(
+          product,
+          unitPrice,
+          value,
+          totalLine
+        );
       }
     } catch (err) {
       console.error(err);
     }
 
-    self.innerHTML = content;
+    this.self.innerHTML = content;
     this.updateTotalCart(total);
-    this.removeProduct(self);
+    this.removeProduct();
   }
 
   /**
@@ -44,8 +53,13 @@ class cartPage {
    * @memberof cartPage
    */
   updateTotalCart(total) {
-    document.querySelector(".order-subtotal").innerHTML = Number.parseFloat(total).toFixed(2) + '€';
-    document.querySelector(".order-paid").innerHTML = Number.parseFloat(total).toFixed(2) + '€';
+    document.querySelector(
+      '.order-subtotal'
+    ).innerHTML = orinocoApi.apiDatas.formatLocaleMoney(total);
+    document.querySelector(
+      '.order-paid'
+    ).innerHTML = orinocoApi.apiDatas.formatLocaleMoney(total);
+    console.log(this);
     localStorage.setItem('total', total);
   }
 
@@ -63,33 +77,32 @@ class cartPage {
    * @return  {HTMLElement} retourne une ligne <tr> avec les éléments Html
    * @memberof cartPage
    */
-  buildHtmlCartTable(product, qty = 1, total) {
+  static buildHtmlCartTable(product, unitPrice, qty = 1, total) {
     return `
     <tr id="${product._id}">
-      <td class="image" data-title="No"><img src="${product.imageUrl}" alt="#"></td>
-      <td class="product-des" data-title="Description">
-        <p class="product-name"><a href="produit.html?id=${product._id}">${product.name}</a></p>
-        <p class="product-des">${product.description}</p>
-      </td>
-      <td class="price" data-title="Price"><span>${product.price / 100}</span></td>
-      <td class="qty" data-title="Qty"><!-- Input Order -->
-        <span>${qty}</span>
-      </td>
-      <td class="total-amount" data-title="Total"><span>${Number.parseFloat(total).toFixed(2) + '€'}</span></td>
-      <td class="action" data-title="Remove""><a href="#" class="remove" data-id="${product._id}"><i class="far fa-trash-alt"></i></a></td>
+    <td class="image" data-title="No"><img src="${product.imageUrl}" alt="#"></td>
+    <td class="product-des" data-title="Description">
+    <p class="product-name"><a href="produit.html?id=${product._id}">${product.name}</a></p>
+    <p class="product-des">${product.description}</p>
+    </td>
+    <td class="price" data-title="Price"><span>${unitPrice}</span></td>
+    <td class="qty" data-title="Qty"><!-- Input Order -->
+    <span>${qty}</span>
+    </td>
+    <td class="total-amount" data-title="Total"><span>${total}</span></td>
+    <td class="action" data-title="Remove""><a href="#" class="remove" data-id="${product._id}"><i class="far fa-trash-alt"></i></a></td>
     </tr>
-    `
+    `;
   }
 
-
-  removeProduct(self) {
-    self.querySelectorAll('a.remove').forEach(item => {
-      item.addEventListener('click', event => {
+  removeProduct() {
+    this.self.querySelectorAll('a.remove').forEach((item) => {
+      item.addEventListener('click', (event) => {
         event.preventDefault();
-        let product = item.getAttribute('data-id');
+        const product = item.getAttribute('data-id');
         orinocoApi.apiDatas.removeProductInCart(product);
-      })
-    })
+      });
+    });
   }
 
   /**
@@ -98,20 +111,22 @@ class cartPage {
    *
    * @memberof cartPage
    */
-  checkForm() {
-    let firstName = document.getElementById('validationFirstName');
-    let name = document.getElementById('validationName');
-    let rue = document.getElementById('validationRue');
-    let ville = document.getElementById('validationVille');
-    let codePostal = document.getElementById('validationCodePostal');
-    let email = document.getElementById('validatedInputEmail');
-    let confirmationEmail = document.getElementById('validatedInputEmailConfirmation');
-    let cgvAccept = document.getElementById('invalidCheck3');
-    let postalRegex = /^\d{5}$|^\d{5}-\d{4}$/;
-    let textRegex = /^[a-zA-Z0-9\s,'-]*$/;
-    let emailRegex = /^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@{[a-zA-Z0-9_\-\.]+0\.([a-zA-Z]{2,5}){1,25})+)*$/;;
+  static checkForm() {
+    const firstName = document.getElementById('validationFirstName');
+    const name = document.getElementById('validationName');
+    const rue = document.getElementById('validationRue');
+    const ville = document.getElementById('validationVille');
+    const codePostal = document.getElementById('validationCodePostal');
+    const email = document.getElementById('validatedInputEmail');
+    const confirmationEmail = document.getElementById(
+      'validatedInputEmailConfirmation'
+    );
+    const cgvAccept = document.getElementById('invalidCheck3');
+    const postalRegex = /^\d{5}$|^\d{5}-\d{4}$/;
+    const textRegex = /^[a-zA-Z0-9\s,'-]*$/;
+    const emailRegex = /^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@{[a-zA-Z0-9_\-\.]+0\.([a-zA-Z]{2,5}){1,25})+)*$/;
 
-    firstName.addEventListener('change', function () {
+    firstName.addEventListener('change', () => {
       if (textRegex.test(firstName.value)) {
         firstName.classList.add('is-valid');
         firstName.classList.remove('is-invalid');
@@ -121,7 +136,7 @@ class cartPage {
       }
     });
 
-    name.addEventListener('change', function () {
+    name.addEventListener('change', () => {
       if (textRegex.test(name.value)) {
         name.classList.add('is-valid');
         name.classList.remove('is-invalid');
@@ -131,7 +146,7 @@ class cartPage {
       }
     });
 
-    rue.addEventListener('change', function () {
+    rue.addEventListener('change', () => {
       if (textRegex.test(rue.value)) {
         rue.classList.add('is-valid');
         rue.classList.remove('is-invalid');
@@ -141,7 +156,7 @@ class cartPage {
       }
     });
 
-    ville.addEventListener('change', function () {
+    ville.addEventListener('change', () => {
       if (textRegex.test(ville.value)) {
         ville.classList.add('is-valid');
         ville.classList.remove('is-invalid');
@@ -151,7 +166,7 @@ class cartPage {
       }
     });
 
-    codePostal.addEventListener('change', function () {
+    codePostal.addEventListener('change', () => {
       if (postalRegex.test(codePostal.value)) {
         codePostal.classList.add('is-valid');
         codePostal.classList.remove('is-invalid');
@@ -161,7 +176,7 @@ class cartPage {
       }
     });
 
-    email.addEventListener('change', function () {
+    email.addEventListener('change', () => {
       if (emailRegex.test(email.value)) {
         email.classList.add('is-valid');
         email.classList.remove('is-invalid');
@@ -175,7 +190,7 @@ class cartPage {
       }
     });
 
-    confirmationEmail.addEventListener('change', function () {
+    confirmationEmail.addEventListener('change', () => {
       if (email.value === confirmationEmail.value) {
         confirmationEmail.classList.add('is-valid');
         confirmationEmail.classList.remove('is-invalid');
@@ -189,7 +204,7 @@ class cartPage {
       }
     });
 
-    cgvAccept.addEventListener('change', function () {
+    cgvAccept.addEventListener('change', () => {
       if (cgvAccept.checked) {
         cgvAccept.classList.add('is-valid');
         cgvAccept.classList.remove('is-invalid');
@@ -208,14 +223,16 @@ class cartPage {
    * @memberof cartPage
    */
   validateOrder() {
-    document.getElementById("customer-form").addEventListener("submit", event => {
-      event.preventDefault();
-      if (orinocoApi.apiDatas.getCart().length > 0) {
-        this.formSubmit();
-      } else {
-        alert("Votre panier est vide! Merci de choisir un produit!")
-      }
-    })
+    document
+      .getElementById('customer-form')
+      .addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (orinocoApi.apiDatas.getCart().length > 0) {
+          CartPage.formSubmit();
+        } else {
+          alert('Votre panier est vide! Merci de choisir un produit!');
+        }
+      });
   }
 
   /**
@@ -226,55 +243,70 @@ class cartPage {
    *
    * @memberof cartPage
    */
-  formSubmit() {
-    let firstName = document.getElementById('validationFirstName');
-    let name = document.getElementById('validationName');
-    let rue = document.getElementById('validationRue');
-    let ville = document.getElementById('validationVille');
-    let codePostal = document.getElementById('validationCodePostal');
-    let email = document.getElementById('validatedInputEmail');
-    let confirmationEmail = document.getElementById('validatedInputEmailConfirmation');
-    let cgvAccept = document.getElementById('invalidCheck3');
-    let postalRegex = /^\d{5}$|^\d{5}-\d{4}$/;
-    let textRegex = /^[a-zA-Z0-9\s,'-]*$/;
-    let emailRegex = /^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@{[a-zA-Z0-9_\-\.]+0\.([a-zA-Z]{2,5}){1,25})+)*$/;
+  static formSubmit() {
+    const firstName = document.getElementById('validationFirstName');
+    const name = document.getElementById('validationName');
+    const rue = document.getElementById('validationRue');
+    const ville = document.getElementById('validationVille');
+    const codePostal = document.getElementById('validationCodePostal');
+    const email = document.getElementById('validatedInputEmail');
+    const confirmationEmail = document.getElementById(
+      'validatedInputEmailConfirmation'
+    );
+    const cgvAccept = document.getElementById('invalidCheck3');
+    const postalRegex = /^\d{5}$|^\d{5}-\d{4}$/;
+    const textRegex = /^[a-zA-Z0-9\s,'-]*$/;
+    const emailRegex = /^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@{[a-zA-Z0-9_\-\.]+0\.([a-zA-Z]{2,5}){1,25})+)*$/;
 
-    if (textRegex.test(firstName.value) !== true | firstName.value == "") {
+    if ((textRegex.test(firstName.value) !== true) | (firstName.value == '')) {
       alert("Merci d'indiquer votre prénom");
     }
-    if (textRegex.test(name.value) !== true | name.value == "") {
+    if ((textRegex.test(name.value) !== true) | (name.value == '')) {
       alert("Merci d'indiquer votre nom");
     }
-    if (textRegex.test(rue.value) !== true | rue.value == "") {
+    if ((textRegex.test(rue.value) !== true) | (rue.value == '')) {
       alert("Merci d'indiquer votre rue");
     }
-    if (textRegex.test(ville.value) !== true | ville.value == "") {
+    if ((textRegex.test(ville.value) !== true) | (ville.value == '')) {
       alert("Merci d'indiquer votre ville");
     }
-    if (postalRegex.test(codePostal.value) !== true | codePostal.value == "") {
+    if (
+      (postalRegex.test(codePostal.value) !== true) |
+      (codePostal.value == '')
+    ) {
       alert("Merci d'indiquer votre code postal");
     }
-    if (emailRegex.test(email.value) !== true | email.value == "" & email.value !== confirmationEmail.value) {
+    if (
+      (emailRegex.test(email.value) !== true) |
+      ((email.value == '') & (email.value !== confirmationEmail.value))
+    ) {
       alert("Merci d'indiquer votre email");
     }
     if (cgvAccept.checked !== true) {
       alert("Merci d'accepter nos CGV");
-    }if (textRegex.test(firstName.value) !== true | firstName.value == "") {
+    }
+    if ((textRegex.test(firstName.value) !== true) | (firstName.value == '')) {
       alert("Merci d'indiquer votre prénom");
     }
-    if (textRegex.test(name.value) !== true | name.value == "") {
+    if ((textRegex.test(name.value) !== true) | (name.value == '')) {
       alert("Merci d'indiquer votre nom");
     }
-    if (textRegex.test(rue.value) !== true | rue.value == "") {
+    if ((textRegex.test(rue.value) !== true) | (rue.value == '')) {
       alert("Merci d'indiquer votre rue");
     }
-    if (textRegex.test(ville.value) !== true | ville.value == "") {
+    if ((textRegex.test(ville.value) !== true) | (ville.value == '')) {
       alert("Merci d'indiquer votre ville");
     }
-    if (postalRegex.test(codePostal.value) !== true | codePostal.value == "") {
+    if (
+      (postalRegex.test(codePostal.value) !== true) |
+      (codePostal.value == '')
+    ) {
       alert("Merci d'indiquer votre code postal");
     }
-    if (emailRegex.test(email.value) !== true | email.value == "" & email.value !== confirmationEmail.value) {
+    if (
+      (emailRegex.test(email.value) !== true) |
+      ((email.value == '') & (email.value !== confirmationEmail.value))
+    ) {
       alert("Merci d'indiquer votre email");
     }
     if (cgvAccept.checked !== true) {
@@ -288,7 +320,7 @@ class cartPage {
       address: rue.value,
       city: ville.value,
       email: email.value
-    }
+    };
 
     // ID des produits du panier
     let products = JSON.parse(orinocoApi.apiDatas.getCart());

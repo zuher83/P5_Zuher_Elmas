@@ -2,21 +2,21 @@ const orinocoApi = {
   apiDatas: new apiDatas("http://localhost:3000/api/cameras/")
 };
 
-orinocoApi.page = definePage();
+orinocoApi.page = this.definePage();
 
 function definePage() {
-  var searchParams = new URLSearchParams(document.location.search.substring(1));
-  let params = searchParams.get('id')
-  var url = window.location.pathname;
+  const searchParams = new URLSearchParams(document.location.search.substring(1));
+  const params = searchParams.get('id')
+  const url = window.location.pathname;
 
   switch (url) {
     case "/produit.html":
-      return new product(document.querySelector("#product-view"), params);
+      return new Product(document.querySelector("#product-view"), params);
     case "/cart.html":
-      return new cartPage(document.querySelector("tbody.cart-table-line"));
+      return new CartPage(document.querySelector("tbody.cart-table-line"));
     case "/confirmation.html":
       return new Confirmation(document.querySelector("main.confirmation-content"));
     default:
-      return new home(document.querySelector("#product_list"));
+      return new Home(document.querySelector("#product_list"));
   }
 }

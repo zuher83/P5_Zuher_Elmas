@@ -1,33 +1,44 @@
-class home {
+class Home {
   /**
-   * [constructor description]
-   *
-   * @param   {HTMLElement}  domTarget  [domTarget description]
-   *
-   * @constructor
+   * Creates an instance of Home.
+   * @memberof Home
    */
-  constructor(homePage) {
-    this.getAllProductItems(homePage);
+  constructor(self) {
+    this.self = self;
+    this.getAllProductItems();
   }
 
-  async getAllProductItems(homePage) {
-    let content = "";
+  /**
+   * Affiche la liste de tous les produits disponibles dans le backend
+   *
+   * @memberof Home
+   */
+  async getAllProductItems() {
+    let content = '';
     try {
       const products = await orinocoApi.apiDatas.allProductItems();
-      // for (let x = 0, size = products.length; x < size; x++) {
-      for (let p = 0; p < products.length; p++) {
-        content += this.buildHtmlProduct(products[p]);
+      for (let p = 0; p < products.length; p += 1) {
+        const unitPrice = orinocoApi.apiDatas.formatLocaleMoney(
+          products[p].price / 100
+        );
+        content += Home.buildHtmlProduct(products[p], unitPrice);
       }
     } catch (err) {
       console.error(err);
     }
-
-    homePage.innerHTML = content;
+    this.self.innerHTML = content;
     this.addInMyCartClick();
   }
 
-  buildHtmlProduct(product) {
-    return `
+  /**
+   * Construit le HTML de la présentation de la liste des produit
+   *
+   * @param   {Object} product  Objet retourné par le backend
+   * @return  {HTMLElement}     Html construit
+   * @memberof Home
+   */
+  static buildHtmlProduct(product, unitPrice) {
+    const resultHtml = `
       <div class="col-md-4 col-sm-12 mb-4">
         <div class="card" data-id="${product._id}">
             <a href="produit.html?id=${product._id}">
@@ -40,7 +51,7 @@ class home {
                 <div class="card-text">${product.description} </div>
                 <div class="row pt-3">
                     <div class="col">
-                        <div class="prix text-danger">${product.price / 100} €</div>
+                        <div class="prix text-danger">${unitPrice}</div>
                     </div>
                     <div class="col">
                         <a href="#" class="btn btn-success add-in-cart" data-id="${product._id}"><i class="fas fa-cart-plus"></i> Ajouter</a>
@@ -50,15 +61,23 @@ class home {
         </div>
       </div>
     `;
+
+    return resultHtml;
   }
 
+  /**
+   * Permet d'ajouter dans le panier un produit directement depuis la liste
+   * sans rentrer sur la page du produit
+   *
+   * @memberof Home
+   */
   addInMyCartClick() {
-    document.querySelectorAll('a.add-in-cart').forEach(item => {
-      item.addEventListener('click', event => {
+    this.self.querySelectorAll('a.add-in-cart').forEach((item) => {
+      item.addEventListener('click', (event) => {
         event.preventDefault();
-        let product = event.target.getAttribute('data-id');
+        const product = event.target.getAttribute('data-id');
         orinocoApi.apiDatas.addInCart(product, 1);
-      })
-    })
+      });
+    });
   }
 }

@@ -1,26 +1,34 @@
-class product {
-
-  constructor(pageProduct, idProduct) {
-    this.getProductItem(pageProduct, idProduct);
+class Product {
+  /**
+   * Creates an instance of Product.
+   * @param {HTMLElement} self
+   * @param {String} idProduct
+   * @memberof Product
+   */
+  constructor(self, idProduct) {
+    this.self = self;
+    this.getProductItem(idProduct);
   }
 
   /**
    * Affiche le produit avec les spécifications et construit le html
    *
-   * @param   {HTMLElement}   pageProduct
    * @param   {String}        idProduct   Id du produit
    * @memberof product
    */
-  async getProductItem(pageProduct, idProduct) {
-    let content = "";
+  async getProductItem(idProduct) {
+    let content = '';
     try {
       const product = await orinocoApi.apiDatas.productItem(idProduct);
-      content += this.buildHtmlProduct(product);
+      const unitPrice = orinocoApi.apiDatas.formatLocaleMoney(
+        product.price / 100
+      );
+      content += Product.buildHtmlProduct(product, unitPrice);
     } catch (err) {
       console.error(err);
     }
 
-    pageProduct.innerHTML = content;
+    this.self.innerHTML = content;
     this.quantityUpdate();
     this.addInMyCartClick();
   }
@@ -31,8 +39,12 @@ class product {
    * @memberof product
    */
   quantityUpdate() {
-    document.getElementById("minus").addEventListener("click", this.minusQuantity);
-    document.getElementById("plus").addEventListener("click", this.plusQuantity);
+    document
+      .getElementById('minus')
+      .addEventListener('click', this.minusQuantity);
+    document
+      .getElementById('plus')
+      .addEventListener('click', this.plusQuantity);
   }
 
   /**
@@ -41,10 +53,10 @@ class product {
    * @memberof product
    */
   minusQuantity() {
-    let getValue = parseInt(document.getElementById("quantity").value);
+    let getValue = parseInt(document.getElementById('quantity').value);
     if (getValue > 1) {
-      let newValue = getValue -= 1;
-      document.getElementById("quantity").value = newValue;
+      let newValue = (getValue -= 1);
+      document.getElementById('quantity').value = newValue;
     }
   }
 
@@ -54,9 +66,9 @@ class product {
    * @memberof product
    */
   plusQuantity() {
-    let getValue = parseInt(document.getElementById("quantity").value);
-    let newValue = getValue += 1;
-    document.getElementById("quantity").value = newValue;
+    let getValue = parseInt(document.getElementById('quantity').value);
+    let newValue = (getValue += 1);
+    document.getElementById('quantity').value = newValue;
   }
 
   /**
@@ -66,7 +78,7 @@ class product {
    * @return {HTMLElement}
    * @memberof product
    */
-  getLensesOptions(lenses) {
+  static getLensesOptions(lenses) {
     let result = '';
     for (let i = 0, size = lenses.length; i < size; i++) {
       result += ` <option>${lenses[i]}</option>`;
@@ -81,7 +93,7 @@ class product {
    * @return  {HTMLElement}
    * @memberof product
    */
-  buildHtmlProduct(product) {
+  static buildHtmlProduct(product, unitPrice) {
     return `
     <div class="col-12 col-lg-6">
       <div class="card bg-light mb-3">
@@ -99,7 +111,9 @@ class product {
             <div class="card-body">
                 <h2 class="card-title">${product.name} </h2>
                 <div class="card-text">${product.description} </div>
-                <select class="form-control mb-4">${this.getLensesOptions(product.lenses)} </select>
+                <select class="form-control mb-4">${Product.getLensesOptions(
+                  product.lenses
+                )} </select>
                 <div class="row">
                   <div class="col col-lg-6">
                     <div class="form-group">
@@ -121,7 +135,7 @@ class product {
                 </div>
                 <div class="row pt-3">
                     <div class="col">
-                        <div class="prix font-weight-bold label label-danger">${product.price / 100} €</div>
+                        <div class="prix font-weight-bold label label-danger">${unitPrice}</div>
                     </div>
                     <div class="col">
                         <button id="add-in-cart" class="btn btn-sm btn-success"><i class="fas fa-cart-plus"></i> Ajouter</button>
@@ -139,7 +153,9 @@ class product {
    * @memberof product
    */
   addInMyCartClick() {
-    document.getElementById("add-in-cart").addEventListener("click", this.addInMyCart);
+    document
+      .getElementById('add-in-cart')
+      .addEventListener('click', this.addInMyCart);
   }
 
   /**
@@ -148,11 +164,12 @@ class product {
    * @memberof product
    */
   addInMyCart() {
-    var searchParams = new URLSearchParams(document.location.search.substring(1));
-    let params = searchParams.get('id');
-    let quantity = parseInt(document.getElementById("quantity").value);
+    const searchParams = new URLSearchParams(
+      document.location.search.substring(1)
+    );
+    const params = searchParams.get('id');
+    const quantity = parseInt(document.getElementById('quantity').value);
 
     orinocoApi.apiDatas.addInCart(params, quantity);
   }
-
 }

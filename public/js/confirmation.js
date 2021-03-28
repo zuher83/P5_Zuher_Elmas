@@ -1,48 +1,46 @@
-class confirmation {
-
+class Confirmation {
   constructor(self) {
     this.self = self;
     this.removeCart(self);
   }
 
-
   /**
    * Efface le panier dans le localstorage
    *
-   * @param   {object}  self
+   * @param   {Object}  self
    * @memberof Confirmation
    */
-  removeCart(self) {
-    localStorage.removeItem("cart");
-    this.confirmationHtml(self);
+  removeCart() {
+    localStorage.removeItem('cart');
+    this.confirmationHtml();
   }
-
 
   /**
    * Construit le html de confirmation de la commanded
    *
-   * @param   {object}  self
    * @memberof Confirmation
    */
-  confirmationHtml(self) {
-    let customer = JSON.parse(localStorage.getItem("contact"));
-    let orderId = new URLSearchParams(document.location.search.substring(1)).get('orderId');
-    let totalOrder = JSON.parse(localStorage.getItem("total"));
+  confirmationHtml() {
+    const contact = JSON.parse(localStorage.getItem('contact'));
+    const orderId = new URLSearchParams(document.location.search.substring(1)).get('orderId');
+    const totalOrder = orinocoApi.apiDatas.formatLocaleMoney(
+      JSON.parse(localStorage.getItem('total'))
+    );
 
-    self.innerHTML = `
+    this.self.innerHTML = `
     <section class="confirmationWrapper">
       <div class="container">
         <div class="row">
           <div class="col-md-12 section-title">
-            <h1>Cher ${customer.firstName} ${customer.lastName}, nous avons le plaisir de vous confirmer votre commande
+            <h1>Cher <b>${contact.firstName} ${contact.lastName}</b>, nous avons le plaisir de vous confirmer votre commande
             et vous remercions pour votre achat !</h1>
           </div>
           <div class="col-md-12 text-center">
             <p>
-              Votre commande n° ${orderId} d'un montant de <span id="totalOrder">${totalOrder},00€</span> a été validée.
+              Votre commande n° <b>${orderId}</b> d'un montant de <span id="totalOrder"><b>${totalOrder}</b></span> a été validée.
             </p>
             <p>
-              Vous recevrez votre facture par mail à l'adresse <span id="orderMail">${customer.email}</span>.
+              Vous recevrez votre facture par mail à l'adresse <span id="orderMail"><b>${contact.email}</b></span>.
             </p>
             <p>
               L'équipe d'Orinoco vous remercie pour votre confiance !
@@ -55,5 +53,4 @@ class confirmation {
     </div>
     `;
   }
-
 }

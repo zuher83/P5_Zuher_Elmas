@@ -123,8 +123,8 @@
 							<!-- Shopping Item -->
 							<div class="shopping-item">
 								<div class="dropdown-cart-header">
-									<span class="shop-cart-items">2 items</span>
-									<a href="/cart.html">View Cart</a>
+									<span class="shop-cart-items">Pannier Vide</span>
+									<a href="/cart.html">Voir mon panier</a>
 								</div>
 								<ul class="shopping-list">
 
@@ -132,9 +132,9 @@
 								<div class="bottom">
 									<div class="total">
 										<span>Total</span>
-										<span class="total-amount">$134.00</span>
+										<span class="total-amount">0</span>
 									</div>
-									<a href="checkout.html" class="btn animate">Checkout</a>
+									<a href="cart.html" class="btn animate">J'ai fini mes achats</a>
 								</div>
 							</div>
 							<!--/ End Shopping Item -->
@@ -156,22 +156,10 @@
 								<div class="navbar-collapse">
 									<div class="nav-inner">
 										<ul class="nav main-menu menu navbar-nav">
-												<li class="active"><a href="/">Home</a></li>
-												<li><a href="#">Product</a></li>
-												<li><a href="#">Service</a></li>
-												<li><a href="#">Shop<i class="ti-angle-down"></i><span class="new">New</span></a>
-													<ul class="dropdown">
-														<li><a href="cart.html">Cart</a></li>
-														<li><a href="checkout.html">Checkout</a></li>
-													</ul>
-												</li>
-												<li><a href="#">Pages</a></li>
-												<li><a href="#">Blog<i class="ti-angle-down"></i></a>
-													<ul class="dropdown">
-														<li><a href="blog-single-sidebar.html">Blog Single Sidebar</a></li>
-													</ul>
-												</li>
-												<li><a href="contact.html">Contact Us</a></li>
+												<li class="active"><a href="/">Accueil</a></li>
+												<li><a href="#">Produits</a></li>
+												<li><a href="#">Services</a></li>
+												<li><a href="cart.html">Mon panier<i class="ti-angle-down"></i><span class="new">New</span></a></li>
 											</ul>
 									</div>
 								</div>
@@ -201,10 +189,10 @@
             <table class="table shopping-summery">
               <thead>
                 <tr class="main-hading">
-                  <th>PRODUCT</th>
-                  <th>NAME</th>
-                  <th class="text-center">UNIT PRICE</th>
-                  <th class="text-center">QUANTITY</th>
+                  <th>PRODUIT</th>
+                  <th>DESCRIPTION</th>
+                  <th class="text-center">PRIX</th>
+                  <th class="text-center">QUANTITE</th>
                   <th class="text-center">TOTAL</th>
                   <th class="text-center"><i class="ti-trash remove-icon"></i></th>
                 </tr>
@@ -225,12 +213,6 @@
               <div class="row">
                 <div class="col-lg-8 col-md-5 col-12">
                   <div class="left">
-                    <div class="coupon">
-                      <form action="#" target="_blank">
-                        <input name="Coupon" placeholder="Enter Your Coupon">
-                        <button class="btn">Apply</button>
-                      </form>
-                    </div>
                     <div class="form-group form-check">
                       <input class="form-check-input" name="news" id="delivery-cost" type="checkbox">
                       <label class="checkbox-inline" for="delivery-cost">Livraison Express (+10€)
@@ -241,13 +223,12 @@
                 <div class="col-lg-4 col-md-7 col-12">
                   <div class="right">
                     <ul>
-                      <li>Total<span class="order-subtotal">$330.00</span></li>
-                      <li>Livraison<span class="delivery-cost">Free</span></li>
-                      <li class="last">A Payer<span class="order-paid">$310.00</span></li>
+                      <li>Total<span class="order-subtotal">0.00 €</span></li>
+                      <li>Livraison<span class="delivery-cost">Offert</span></li>
+                      <li class="last">A Payer<span class="order-paid">0.00 €</span></li>
                     </ul>
                     <div class="button5">
-                      <a href="#" class="btn">Checkout</a>
-                      <a href="#" class="btn">Continue shopping</a>
+                      <a href="/" class="btn btn-success">Continuer mes achats</a>
                     </div>
                   </div>
                 </div>
@@ -258,6 +239,7 @@
         </div>
         <div class="row">
           <div class="col-md-12 register-form">
+            <div class="card p-5 mt-5">
             <h2>Vos informations</h2>
             <form id="customer-form">
               <div class="form-row">
@@ -322,7 +304,7 @@
                     <input type="text" class="form-control" id="validatedInputEmailConfirmation" aria-describedby="validatedInputEmailConfirmation" required>
                   </div>
                   <div class="invalid-feedback">
-                    Merci d'indiquer un le même email que sur le champ précedent
+                    Merci d'indiquer le même email que sur le champ précedent
                   </div>
                 </div>
               </div>
@@ -337,9 +319,10 @@
                   </div>
                 </div>
               </div>
-              <button class="btn-primary btn" id="submit-order" type="submit">Envoyer</button>
+              <button class="btn-primary btn" id="submit-order" type="submit">Confirmer ma commande</button>
             </form>
           </div>
+        </div>
         </div>
       </div>
     </section>
